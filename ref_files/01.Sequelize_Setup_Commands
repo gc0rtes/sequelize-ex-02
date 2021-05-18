@@ -1,0 +1,174 @@
+
+--**SETUP Inside Folder Project**--
+
+## Start an empty init npm project without going through an interactive process. The -y stands for yes.
+
+$ npm init -y
+
+## Create a GH repository with the same name project's directory 
+
+$ git init
+
+
+$ touch .gitignore (add node_modules/ to your .gitignore)
+
+
+--**SETUP Sequelize**--
+
+1) To install Sequelize and it's CLI (Command Line tools) : 
+
+$ npm i sequelize sequelize-cli 
+
+2) Install the client library, in this case pg packge:
+
+$ npm i pg 
+
+3) To setup sequelize for use inside your project run:
+
+$ npx sequelize-cli init
+
+
+4) CONNECTING to the database
+
+4.1) Create a new PostgresSQL instance in ElephantSQL and you have the connection information for it.
+
+4.2) Head to the 'config folder' and open the 'config.json'
+This file has 3 objects each one is one database (ig projects developers usually set up several databases)
+
+Replace the 'development' object with the code below:
+
+"development": {
+    "url": "postgres://qmcrwizb:..."
+  },
+
+
+5) Open a client Database (dbeaver or baakeeper) and connect/add database. Obs: use your ElephantSQL connection key
+ 
+
+6)CHECKING if Sequelize can connect to postgres:
+
+$ npx sequelize-cli db:migrate
+
+No changing on database. If everything went ok we should see a message like:
+
+Sequelize CLI [Node: 10.17.0, ...]
+Loaded configuration file "config/config.json".
+Using enviroment "development".
+No migrations were executed, database schema was already up to date.
+
+
+6) SET sequelize configs in models/index.js CHANGE line 15  to:
+
+
+sequelize = new Sequelize(config.url, config); //line 15
+
+So we tell sequelize to use our url config when querying the data through the models.
+
+7) COMMIT and PUSH to Git and GH:
+
+$ git commit -m "first commit. database connected. setup done."
+
+$ git push
+
+---SETUP DONE---
+
+
+--***CREATING TABLES AND DATA***--
+
+1)To create a new model (ex:  table's name is 'user'): 
+
+$ npx sequelize-cli model:generate --name user --attributes name:string,email:string,phone:integer,password:string
+
+##this will create a new file 'user.js' inside models/
+like this:
+'20210517114716-create-user.js'
+
+
+2)to actually create our users table let's run the related migration:
+
+$ npx sequelize-cli db:migrate
+
+
+3)Seeding the table. first generate the skeleton of a seed file using our CLI:
+
+$ npx sequelize-cli seed:generate --name some-users.
+
+##this will create a new file like: 
+'20210517115712-some-users.js'
+
+3.1) Open up the generated file inside the seeders/ folder and add some data like:
+[
+{
+          name: "Leo Messi",
+          email: "leo@messi.com",
+          phone: 1234567,
+          password: "test",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        }
+]
+ 
+
+4)Now we'll run the seed to make sure our table gets some data. To run do:
+
+$ npx sequelize-cli db:seed:all
+
+## To undo the seed we can use
+$ npx sequelize-cli db:seed:undo:all
+
+## We can also point to a specific seed file to run instead of "all" using the --seed flag
+$ npx sequelize-cli db:seed --seed 20191211110453-some-users
+
+## Undo seed:
+$ npx sequelize-cli db:seed:undo --seed 20191211110453-some-users.js (.js at the end of the file required to be able to run)
+
+npx sequelize-cli db:seed --seed 20210517115712-some-users.js
+
+
+***Flow example:***
+// npx sequelize-cli db:migrate:undo:all //Clean start
+// npx sequelize-cli db:migrate //Build tables
+// npx sequelize-cli db:seed:all //Put data in
+
+
+***INSTALLING the web application framework Express***
+
+1) Run npm install express inside the folder's project
+$ npm i express
+
+2) Create a index.js (or server.js) on the root project's directory and add the follow example:
+
+//start
+const express = require('express');
+const User = require('./models').user;
+
+const PORT = 4000;
+
+const app = express()
+
+
+app.get('/path_to_endpoint', async (request, response) => {
+  try {
+    console.log("i got a request for the user list")
+
+    const allUsers = await User.findAll();
+    response.send(allUsers)
+  } catch(e) {
+    console.log(e.message);
+  }
+}) 
+
+app.listen(PORT, () => console.log("server running"))
+//end
+
+***CLIENT***
+Example of client accessing the database
+
+broser: localhost:4000/path_to_endpoint 
+
+httpie: http -v GET :4000/path_to_endpoint
+
+
+
+
+
