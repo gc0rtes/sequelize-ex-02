@@ -3,3 +3,12 @@ TodoList belongsTo() User, User hasMany() TodoLists (we can have as many userId,
 TodoItem belongsTo() TodoList, TodoList hasMany() TodoItems (we can have as many todoListId, from the same list, into TodoItems table).
 
 If we wanted to restrict the system so that Users can only have one TodoList we would change the second declaration on point 1. from hasMany() to hasOne().
+
+Join table to entities:
+
+itemTag --> belongsTo --> tag
+itemTag --> belongsTo --> todoItem
+Entities amongst themselves:
+
+todoItem --> belongsToMany --> tag
+tag --> belongsToMany --> todoItem
