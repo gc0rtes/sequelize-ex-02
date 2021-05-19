@@ -1,4 +1,4 @@
-const TodoItem = require("./models").todoItems;
+const TodoItem = require("./models").todoItems; //pay attention here to the NameTable "todoItems"
 
 async function createSampleTodoItems() {
   try {
@@ -22,3 +22,5 @@ async function createSampleTodoItems() {
 }
 
 createSampleTodoItems().then((todos) => console.log(todos));
+
+// Run the code with: $ node sample-data.js

@@ -1,3 +1,5 @@
+// In this example we use a new migration to add a new column "important" to the Table "todoItems"
+
 "use strict";
 
 module.exports = {

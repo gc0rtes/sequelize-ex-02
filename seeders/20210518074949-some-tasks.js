@@ -7,17 +7,17 @@ module.exports = {
       "TodoLists",
       [
         {
-          name: "lavar louca",
+          name: "Guilherme's Work List",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          name: "arruma casa",
+          name: "Messi personal list",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          name: "compras no mercado",
+          name: "Todo this week",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
