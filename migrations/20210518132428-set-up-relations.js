@@ -7,17 +7,35 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.addColumn("TodoLists", "userId", {
-      type: Sequelize.INTEGER,
-      references: {
-        model: "Users",
-        key: "id",
-      },
-      onUpdate: "CASCADE",
-      onDelete: "SET NULL",
-    });
+    await queryInterface.addColumn(
+      "TodoLists", // table name
+      "userId", // new field name
+      {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "Users",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "SET NULL",
+      }
+    ),
+      await queryInterface.addColumn(
+        "todoItems", // table name
+        "todoListId", // new field name
+        {
+          type: Sequelize.INTEGER,
+          references: {
+            model: "TodoLists", // table name
+            key: "id",
+          },
+          onUpdate: "CASCADE",
+          onDelete: "SET NULL",
+        }
+      );
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.removeColumn("TodoLists", "userId");
+    await queryInterface.removeColumn("TodoLists", "userId"),
+      await queryInterface.removeColumn("todoItems", "todoListId");
   },
 };
