@@ -2,16 +2,16 @@
 
 const User = require("./models").Users; //pay attention to your TABLE NAME inside e.g. migrations/file 'queryInterface.createTable("Users")'
 
-async function getAllUsers() {
+async function getByPK() {
   try {
     // Selects all rows. Resolves with a (possibly empty) array
-    const allUsers = await User.findAll();
-    return allUsers.map((user) => user.toJSON());
+    const byPK = await User.findByPk(2);
+    return byPK.toJSON();
   } catch (e) {
     console.log(e);
   }
 }
 
-getAllUsers().then((users) => console.log(users));
+getByPK().then((users) => console.log(users));
 
 // to run: $ node name_of_file.js

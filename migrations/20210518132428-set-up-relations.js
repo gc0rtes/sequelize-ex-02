@@ -3,13 +3,18 @@
 
 //We are creating the column "userId" into the table "TodoLists" on our database
 
+//Obs: camelCase the 'Id' is the standart model style for a Foreing Key.
+//Take the name of the table in sigular and put Id at the end.
+//Ex: 'userId' and 'listId' is ok. But 'todoListId' is bad.
+
 "use strict";
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
+    //setup the TodoLists table
     await queryInterface.addColumn(
       "TodoLists", // table name
-      "userId", // new field name
+      "userId", // new column added called "userId". It'll store the "Users" id PK.
       {
         type: Sequelize.INTEGER,
         references: {
@@ -20,9 +25,10 @@ module.exports = {
         onDelete: "SET NULL",
       }
     ),
+      //setup the "todoItems" table
       await queryInterface.addColumn(
         "todoItems", // table name
-        "todoListId", // new field name
+        "todoListId", // new column name. this name is bad. better: 'listId'
         {
           type: Sequelize.INTEGER,
           references: {

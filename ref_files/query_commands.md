@@ -1,3 +1,5 @@
+ref: https://reader.codaisseur.com/courses/backend-bootcamp/01-databases/querying
+
 Create a file on root, ex: sample-query.js and copy the following code:
 
     const User = require("./models").user; //pay attention to your TABLE NAME inside e.g. migrations/file 'queryInterface.createTable("Users")'
@@ -25,10 +27,15 @@ There are lots of different ways in which you can query your database through yo
     const { Op } = require("sequelize");
 
     // Select all rows where firstName === 'Dave', but only return the first one.
+
+
     // Resolves with an object or undefined (if no matching rows exist)
     const specificUser = await User.findOne({ where: { name: "Dave" } });
+
     // Select a row by its primary key. Resolves with an object or undefined (if no matching rows exist)
     const userByPk = await User.findByPk(3);
+
+
     // A query using a numeric operator
     const tallUsers = await User.findAll({
       // WHERE height >= 175
