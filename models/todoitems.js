@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       todoItems.belongsToMany(
         models.tag, //'tag' model file's name
         {
-          through: "itemTags", //"itemTags" table's name
+          through: "itemTags", //"itemTags" file's name
           foreignKey: "todoItemId", //Foreign key in the 'itemTags' table
         }
       );

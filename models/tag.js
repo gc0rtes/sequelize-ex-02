@@ -9,9 +9,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       tag.belongsToMany(
-        models.todoItems, //"todoItems" table's name
+        models.todoItems, //"todoItems" file's name
         {
-          through: "itemTags", //"itemTags" table's name
+          through: "itemTags", //"itemTags" file's name
           foreignKey: "tagId", //Foreign key in the 'itemTags' table
         }
       );
