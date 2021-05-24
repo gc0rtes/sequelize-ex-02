@@ -1,4 +1,6 @@
-const { todoItems, tag } = require("./models"); //name of files!!!
+const { todoItems, tag } = require("./models"); //name of model's files!!!
+
+//Many-to-Many Queries
 
 //show a list of items and their tags
 async function getListItemsTags() {
