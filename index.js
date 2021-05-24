@@ -4,7 +4,8 @@ const PORT = 4000;
 
 // the connection with sequelize starts HERE!
 const User = require("./models").Users; //table name
-// const todoList = require("./models").
+
+const todoList = require("./models").TodoLists; // table name
 
 //express.json() is the body parser. This means it's what makes the body of a POST (or PATCH, PUT) available.
 app.use(express.json());
@@ -15,18 +16,56 @@ app.use(express.json());
 //   console.log(req.body);});
 //Without you I'll undefined.
 
-// Create a new user account
-//Ex: http POST :4000/users name="Firstname Lastname" email=user@aon.com
-app.post("/users", async (req, res, next) => {
+//Ref.:
+//reader.codaisseur.com/courses/backend-bootcamp/02-orm/rest-in-express/restful-api
+
+//EXERCISES WITH CRUD
+//DATABASE CRUD: create, read, update, and delete
+
+//READ: Implement a GET endpoint for all todoLists
+//Ex: http -v get :4000/todolists
+app.get("/todolists", async (request, response, next) => {
   try {
-    const user = await User.create(req.body); //Here we pass the body of the request directly to our model.
-    res.json(user);
+    console.log("I got a request for the todo list");
+    const allLists = await todoList.findAll();
+    response.send(allLists);
   } catch (e) {
     next(e);
   }
 });
 
-//Send an collection [array] of Users
+//CREATE: a list on todoList. We need to send a user id also.
+//Ex: http -v POST :4000/todolists name="Movies to watch" userId=5
+app.post("/todolists", async (request, response, next) => {
+  try {
+    console.log("I got a request to CREATE a new list");
+    const user = await todoList.create(request.body);
+    console.log("What is request.body? ", request.body);
+    response.json(user);
+  } catch (e) {
+    next(e);
+  }
+});
+
+//UPDATE: a list on todoList. We need to check if the list id exists. If so update it.
+//Ex: http -v PUT :4000/todolists/6 name="Cities to go in Europe"
+app.put("/todolists/:listId", async (req, res, next) => {
+  try {
+    console.log("I got a request to UPDATE a new list: ");
+    const listId = parseInt(req.params.listId); //get list id input
+    const listToUpdate = await todoList.findByPk(listId); //look for user
+    if (!listToUpdate) {
+      res.status(404).send("List not found");
+    } else {
+      const updatedList = await listToUpdate.update(req.body);
+      res.json(updatedList);
+    }
+  } catch (e) {
+    next(e);
+  }
+});
+
+//READ: send a response to GET requests to /users
 //Ex: http -v get :4000/users
 app.get("/users", async (request, response, next) => {
   try {
@@ -38,7 +77,7 @@ app.get("/users", async (request, response, next) => {
   }
 });
 
-//Add a route definition that will respond to GET requests to /users/:userId
+//Send a response to GET requests to /users/:userId
 //Ex: http -v get :4000/users/1
 //Obs: Is important to send a status(404) when data is not found
 // 1. Just being proper and abiding to REST principles
@@ -60,8 +99,38 @@ app.get("/users/:userId", async (request, response, next) => {
   }
 });
 
+// READ: send a user's list:  get all the list for one user
+// http -v GET :4000/users/3/lists
+app.get("/users/:userId/lists", async (req, res, next) => {
+  try {
+    const id = parseInt(req.params.userId);
+    console.log(`I got a request for user/${id}/lists: `);
+    const userLists = await User.findByPk(id, {
+      include: [todoList],
+    });
+    if (!userLists) {
+      res.status(404).send("User not found");
+    } else {
+      res.send(userLists);
+    }
+  } catch (e) {
+    next(e);
+  }
+});
+
+// CREATE a new user account.
+//Ex: http -v POST :4000/users name="Firstname Lastname" email=user@aon.com
+app.post("/users", async (req, res, next) => {
+  try {
+    const user = await User.create(req.body); //Here we pass the body of the request directly to our model.
+    res.json(user);
+  } catch (e) {
+    next(e);
+  }
+});
+
 //UPDATE - The update is a two step process. First we load the user, and then (if it exists), we update it
-//http -v PUT :4000/users/userId/11 name=Anna
+//Ex: http -v PUT :4000/users/11 name=Anna
 
 app.put("/users/:userId", async (req, res, next) => {
   try {
